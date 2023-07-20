@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model Patient {
+  id                    Int              @id @default(autoincrement())
+  nombre                String
+  sexo                  String
+  contacto              String
+  fecha_nacimiento      String
+  informacion_adicional String?
+  PatientHistory        PatientHistory[]
+  Study                 Study[]
+}
+
+model Pregnancies {
+  id               Int             @id @default(autoincrement())
+  anoParto         String
+  termino          String
+  resolucion       String
+  sexo             String
+  peso             String
+  evolucion        String
+  alimentacion     String
+  comentarios      String
+  PatientHistory   PatientHistory? @relation(fields: [patientHistoryId], references: [id])
+  patientHistoryId Int?
+}
+
+model PatientHistory {
+  id                          Int           @id @default(autoincrement())
+  patient                     Patient       @relation(fields: [patientId], references: [id])
+  patientId                   Int
+  menarca                     String
+  ritmo                       String
+  ivsa                        String
+  parejas                     String
+  g                           String
+  p                           String
+  a                           String
+  c                           String
+  mpf                         String
+  fum                         String
+  fpp                         String
+  embarazoEctopico            String
+  cancerFamiliar              String
+  dispareunia                 String
+  tratamientoHormonal         String
+  dismenorrea                 String
+  enfermedades                String
+  medicamentos                String
+  adicciones                  String
+  alergias                    String
+  transfusiones               String
+  quirurgicos                 String
+  grupoSanguineo              String
+  antecedentesNoPatologicos   String
+  antecedesntesFamOncologicos String
+  pregnancies                 Pregnancies[]
+}
+
+model Study {
+  id                      Int     @id @default(autoincrement())
+  patient                 Patient @relation(fields: patientId, references: id)
+  patientId               Int
+  fecha                   String
+  vulva_vagina            String
+  colposcopia             String
+  cervix                  String
+  zonaTransformacion      String
+  epitelioAcetoblanco     String
+  bordes                  String
+  superficie              String
+  pruebaSchiller          String
+  observaciones           String
+  diagnosticoColposcopico String
+  otras                   String
+  planAccion              String
+}
