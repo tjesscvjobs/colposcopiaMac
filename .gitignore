@@ -2,3 +2,7 @@
 node_modules
 colposcopia-react/public/studies/temp/*.jpeg
 colposcopia-react/public/img/icons-1.8.1/*
+colposcopia-react/prisma/dev.db
+colposcopia-react/prisma/dev.db-journal
+colposcopia-react/.env
+colposcopia-react/public/img/slide/*.jpeg
