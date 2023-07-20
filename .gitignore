@@ -6,3 +6,7 @@ colposcopia-react/prisma/dev.db
 colposcopia-react/prisma/dev.db-journal
 colposcopia-react/.env
 colposcopia-react/public/img/slide/*.jpeg
+.vscode/settings.json
+colposcopia-react/src/lib/db.js
+colposcopia-react/src/reportWebVitals.js
+colposcopia-react/src/setupTests.js
