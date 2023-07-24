@@ -10,3 +10,4 @@ colposcopia-react/public/img/slide/*.jpeg
 colposcopia-react/src/lib/db.js
 colposcopia-react/src/reportWebVitals.js
 colposcopia-react/src/setupTests.js
+colposcopia-react/public/studies/patient/*.jpeg

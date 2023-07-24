@@ -105,28 +105,6 @@ function createWindow() {
     win.webContents.send("image:result", "Imagenes Guardadas");
   });
 
-   /**
-   * Save image in study
-   * @global function
-   * @param {object} blob - file to save
-   * */
-   ipcMain.on("rename_image:submit", (event, blob) => {
-    for (let i = 0; i < 6; i++) {
-      fs.renameSync(
-        __dirname + `/studies/temp/${blob[i]}.png`,
-        __dirname + `/studies/temp/${i}-temp.png`
-      );
-    }
-
-    for (let i = 0; i < 6; i++) {
-      fs.renameSync(
-        __dirname + `/studies/temp/${i}-temp.png`,
-        __dirname + `/studies/temp/${i}.png`
-      );
-    }
-
-    win.webContents.send("rename_image:result", "Imagenes Guardadas");
-  });
 
   /**
    * Retrieve patient like name
@@ -144,6 +122,37 @@ function createWindow() {
       }
     );
   });
+
+    /**
+   * Save image in study
+   * @global function
+   * @param {array} blob - file to save
+   * @param {int} id - patientID
+   * */
+    ipcMain.on("rename_image:submit", async(event, blobs, desp, id) => {
+      let today = new Date();
+      let study = {
+        fecha: today,
+        patientId: id
+      }
+      const result = await prisma.study.create({
+        data: study
+      });
+      if (!fs.existsSync(__dirname + "/studies/patient")) {
+        fs.mkdirSync(__dirname + "/studies/patient", { recursive: true });
+      }
+      for (let i = 0; i < desp; i++) {
+        if (
+          fs.renameSync(
+            __dirname + `/studies/temp/${blobs[i]}.jpeg`,
+            __dirname + `/studies/patient/${result.id}-${blobs[i]}.jpeg`
+          )
+        ) {
+        }
+      }
+  
+      win.webContents.send("rename_image:result", result);
+    });
 }
 
 // This method will be called when Electron has finished

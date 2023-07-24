@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+.check {
+  background: #3fbbc0;
+  }
+  .deselect {
+  background: #fff;
+  }

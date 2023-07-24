@@ -14,11 +14,15 @@ import MenuItem from "@mui/material/MenuItem";
 import ReactHookFormSelect from "./SelectInput";
 import { useForm, Controller } from "react-hook-form";
 
+import { useNavigate } from "react-router-dom";
+
 import ModalView from "./Modal";
 
 const { ipcRenderer } = window.require("electron");
 
 export default function NewPatient() {
+
+  const navigate = useNavigate();
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -35,8 +39,8 @@ export default function NewPatient() {
     ipcRenderer.send("save_patient:submit", data);
     //ipcRenderer.removeAllListeners("save_patient:result");
     ipcRenderer.on("save_patient:result", (event, result) => {
-      console.log(result);
       localStorage.setItem('patient', JSON.stringify(result));
+      navigate("/newPatientOption")
     });
   }
 
@@ -56,7 +60,6 @@ export default function NewPatient() {
       <CssBaseline />
       <Container maxWidth="lg">
         <Paper>
-          <ModalView/>
           <div className="flex flex-col justify-center mt-12">
             <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
               <div className="flex px-4 py-4 border-b border-gray-400 dark:border-gray-200">

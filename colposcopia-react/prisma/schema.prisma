@@ -78,16 +78,16 @@ model Study {
   patient                 Patient @relation(fields: patientId, references: id)
   patientId               Int
   fecha                   String
-  vulva_vagina            String
-  colposcopia             String
-  cervix                  String
-  zonaTransformacion      String
-  epitelioAcetoblanco     String
-  bordes                  String
-  superficie              String
-  pruebaSchiller          String
-  observaciones           String
-  diagnosticoColposcopico String
-  otras                   String
-  planAccion              String
+  vulva_vagina            String?
+  colposcopia             String?
+  cervix                  String?
+  zonaTransformacion      String?
+  epitelioAcetoblanco     String?
+  bordes                  String?
+  superficie              String?
+  pruebaSchiller          String?
+  observaciones           String?
+  diagnosticoColposcopico String?
+  otras                   String?
+  planAccion              String?
 }

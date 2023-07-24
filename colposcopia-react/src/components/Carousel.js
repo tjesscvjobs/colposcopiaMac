@@ -39,13 +39,13 @@ function Item(props)
         <CssBaseline />
             <Container maxWidth="md">
                 <Paper>
-                    <container className="flex flex-col justify-center mt-12">                
+                    <div className="flex flex-col justify-center mt-12">                
                     <img src={props.item.url}></img>
                         <h4 className='text-center'>{props.item.description}</h4>
                     <Button className="CheckButton">
                         {props.item.button}
                     </Button>
-                    </container>                 
+                    </div>                 
                 </Paper>
         </Container>
       </React.Fragment>

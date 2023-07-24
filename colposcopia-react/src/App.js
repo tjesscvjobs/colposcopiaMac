@@ -7,6 +7,8 @@ import NewStudy from './components/NewStudy';
 import { Calendar } from './components/Calendar';
 import WebcamCapture from './components/Camara';
 import SelectImg from './components/SelectImg';
+import NewPatientOption from './components/NewPatientOption';
+import NewStudyOption from './components/NewStudyOption';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
@@ -44,6 +46,14 @@ function App() {
         {
           path: "selectImg",
           element: <SelectImg />,
+        },
+        {
+          path: "newPatientOption",
+          element: <NewPatientOption />
+        },
+        {
+          path: "newStudyOption",
+          element: <NewStudyOption />
         }
       ]
     },
