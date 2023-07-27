@@ -1,12 +1,12 @@
-const path = require('path');
+const path = require("path");
 
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require("electron");
 const ipcMain = require("electron").ipcMain;
-const isDev = require('electron-is-dev');
+const isDev = require("electron-is-dev");
 const fs = require("fs");
 
 //import { , PrismaClient } from "@prisma/client";
-const { Prisma, PrismaClient } = require('@prisma/client')
+const { Prisma, PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -17,7 +17,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
     },
   });
 
@@ -25,17 +25,16 @@ function createWindow() {
   // win.loadFile("index.html");
   win.loadURL(
     isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "../build/index.html")}`
   );
   // Open the DevTools.
   if (isDev) {
-    win.webContents.openDevTools({ mode: 'detach' });
+    win.webContents.openDevTools({ mode: "detach" });
   }
 
   //electron IPCrender
 
-  
   /**
    * Save new patient
    * @global function
@@ -43,44 +42,43 @@ function createWindow() {
    * */
   ipcMain.on("save_patient:submit", async (event, patient) => {
     const result = await prisma.patient.create({
-      data: patient
+      data: patient,
     });
     win.webContents.send("save_patient:result", result);
   });
 
-   /**
+  /**
    * Save clinic history patient
    * @global function
    * @param {object} patient - patient history clinic
    * */
-   ipcMain.on("save_history:submit", async (event, newPatient) => {
-    const {patient, pregnancies, ...history} = newPatient
-    var pregnanciesResult = []
+  ipcMain.on("save_history:submit", async (event, newPatient) => {
+    const { patient, pregnancies, ...history } = newPatient;
+    var pregnanciesResult = [];
 
     pregnancies.forEach(async (element) => {
       pregnanciesResult.push(
         await prisma.regnancies.create({
-          data: element
+          data: element,
         })
-      )
+      );
     });
     const result = await prisma.PatientHistory.create({
       data: {
         patient: patient,
-        ...history
-      }
+        ...history,
+      },
     });
     win.webContents.send("save_history:result", result);
   });
 
-   /**
+  /**
    * Save images
    * @global function
    * @param {object} blob - file to save
    * @param {number} desp - number images
    * */
-   ipcMain.on("image:submit", (event, blob, desp) => {
-
+  ipcMain.on("image:submit", (event, blob, desp) => {
     if (!fs.existsSync(__dirname + "/studies/temp")) {
       fs.mkdirSync(__dirname + "/studies/temp", { recursive: true });
     }
@@ -105,7 +103,6 @@ function createWindow() {
     win.webContents.send("image:result", "Imagenes Guardadas");
   });
 
-
   /**
    * Retrieve patient like name
    * @global function
@@ -123,36 +120,53 @@ function createWindow() {
     );
   });
 
-    /**
+  /**
    * Save image in study
    * @global function
    * @param {array} blob - file to save
    * @param {int} id - patientID
    * */
-    ipcMain.on("rename_image:submit", async(event, blobs, desp, id) => {
-      let today = new Date();
-      let study = {
-        fecha: today,
-        patientId: id
-      }
-      const result = await prisma.study.create({
-        data: study
-      });
-      if (!fs.existsSync(__dirname + "/studies/patient")) {
-        fs.mkdirSync(__dirname + "/studies/patient", { recursive: true });
-      }
-      for (let i = 0; i < desp; i++) {
-        if (
-          fs.renameSync(
-            __dirname + `/studies/temp/${blobs[i]}.jpeg`,
-            __dirname + `/studies/patient/${result.id}-${blobs[i]}.jpeg`
-          )
-        ) {
-        }
-      }
-  
-      win.webContents.send("rename_image:result", result);
+  ipcMain.on("rename_image:submit", async (event, blobs, desp, id) => {
+    let today = new Date();
+    let study = {
+      fecha: today,
+      patientId: id,
+    };
+    const result = await prisma.study.create({
+      data: study,
     });
+    if (!fs.existsSync(__dirname + "/studies/patient")) {
+      fs.mkdirSync(__dirname + "/studies/patient", { recursive: true });
+    }
+    for (let i = 0; i < desp; i++) {
+      if (
+        fs.renameSync(
+          __dirname + `/studies/temp/${blobs[i]}.jpeg`,
+          __dirname + `/studies/patient/${result.id}-${blobs[i]}.jpeg`
+        )
+      ) {
+      }
+    }
+
+    fs.readdir(__dirname + "/studies/temp")
+      .then((files) => {
+        const unlinkPromises = files.map((file) => {
+          const filePath = path.join(__dirname + "/studies/temp", file);
+          return fs.unlink(filePath);
+        });
+
+        return Promise.all(unlinkPromises);
+      })
+      .catch((err) => {
+        console.error(
+          `Something wrong happened removing files of ${
+            __dirname + "/studies/temp"
+          }`
+        );
+      });
+
+    win.webContents.send("rename_image:result", result);
+  });
 }
 
 // This method will be called when Electron has finished
@@ -163,13 +177,13 @@ app.whenReady().then(createWindow);
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
