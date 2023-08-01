@@ -131,12 +131,11 @@ export default function Nav() {
                 <MenuItem
                   onClick={() => {
                     handleClose1();
-                    navigate("/camara");
+                    navigate("/searchPatient");
                   }}
                 >
                   Nuevo
                 </MenuItem>
-                <MenuItem onClick={handleClose1}>Basico</MenuItem>
                 <MenuItem onClick={handleClose1}>Personalizar Reporte</MenuItem>
               </Menu>
             </Link>

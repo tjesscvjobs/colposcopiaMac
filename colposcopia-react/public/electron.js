@@ -108,16 +108,13 @@ function createWindow() {
    * @global function
    * @param {string} patient - name of patient
    * */
-  ipcMain.on("get_list_name:submit", (event, patient) => {
-    database.all(
-      `SELECT * FROM patients WHERE UPPER(name) LIKE UPPER('%${patient}%')`,
-      (err, rows) => {
-        if (err) {
-        }
-
-        win.webContents.send("get_list_name:result", rows);
-      }
-    );
+  ipcMain.on("get_list_name:submit", async (event, patient) => {
+    let patients = await prisma.patient.findMany({ 
+      where: {
+        nombre: { contains: patient },
+      },
+    })
+    win.webContents.send("get_list_name:result", patients);
   });
 
   /**
@@ -148,22 +145,17 @@ function createWindow() {
       }
     }
 
-    fs.readdir(__dirname + "/studies/temp")
-      .then((files) => {
-        const unlinkPromises = files.map((file) => {
-          const filePath = path.join(__dirname + "/studies/temp", file);
-          return fs.unlink(filePath);
-        });
-
-        return Promise.all(unlinkPromises);
-      })
-      .catch((err) => {
-        console.error(
-          `Something wrong happened removing files of ${
-            __dirname + "/studies/temp"
-          }`
-        );
+    if (fs.existsSync( __dirname + `/studies/temp`)) {
+      fs.readdirSync(__dirname + `/studies/temp`).forEach(function (file, index) {
+          var currentPath = path.join(__dirname + `/studies/temp`, file);
+          if (fs.lstatSync(currentPath).isDirectory()) {
+            deleteFolderRecursively(currentPath);
+          } else {
+              fs.unlinkSync(currentPath); // delete file
+          }
       });
+      fs.rmdirSync(__dirname + `/studies/temp`); // delete folder/directories
+  }
 
     win.webContents.send("rename_image:result", result);
   });

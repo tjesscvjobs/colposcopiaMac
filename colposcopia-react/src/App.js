@@ -9,6 +9,9 @@ import WebcamCapture from './components/Camara';
 import SelectImg from './components/SelectImg';
 import NewPatientOption from './components/NewPatientOption';
 import NewStudyOption from './components/NewStudyOption';
+import SearchPatient from './components/SearchPatient';
+import BasicStudyPrint from './components/BasicStudyPrint';
+import RenderBasicStudy from './components/RenderBasicStudy';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
@@ -54,6 +57,14 @@ function App() {
         {
           path: "newStudyOption",
           element: <NewStudyOption />
+        },
+        {
+          path: "searchPatient",
+          element: <SearchPatient />
+        },
+        {
+          path: "basicStudyPrint",
+          element: <RenderBasicStudy />
         }
       ]
     },

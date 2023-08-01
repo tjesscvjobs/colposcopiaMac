@@ -15,12 +15,12 @@ const { ipcRenderer } = window.require("electron");
 export default function NewStudyOption() {
   const navigate = useNavigate();
 
-  const saveHistory = () => {
-    navigate("/patientHistory");
+  const goBasicStudy = () => {
+    navigate("/basicStudyPrint");
   };
 
-  const goStudy = () => {
-    navigate("/camara");
+  const goNewStudy = () => {
+    navigate("/newStudy");
   };
 
   return (
@@ -43,7 +43,7 @@ export default function NewStudyOption() {
                     <Button
                       type="submit"
                       variant="contained"
-                      onClick={saveHistory}
+                      onClick={goBasicStudy}
                     >
                       Imprimir reporte simple
                     </Button>
@@ -52,7 +52,7 @@ export default function NewStudyOption() {
                     <Button
                       type="submit"
                       variant="contained"
-                      onClick={goStudy}
+                      onClick={goNewStudy}
                     >
                       Completar reporte
                     </Button>

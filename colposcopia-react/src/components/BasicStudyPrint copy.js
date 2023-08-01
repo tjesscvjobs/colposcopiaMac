@@ -16,9 +16,10 @@ import { useForm, Controller } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
 
+
 const { ipcRenderer } = window.require("electron");
 
-export default function NewPatient() {
+export default function BasicStudyPrintCopy() {
 
   const navigate = useNavigate();
 
@@ -42,16 +43,17 @@ export default function NewPatient() {
     });
   }
 
-  const savePatient = (data) => {
-    console.log("save patient");
-    console.log(data);
+  const getImgs = () => {
+    let imgs = [];
+    const maxImg = localStorage.getItem("img");
 
-    ipcRenderer.send("save_patient:submit", data);
-    //ipcRenderer.removeAllListeners("save_patient:result");
-    ipcRenderer.on("save_patient:result", (event, result) => {
-      console.log(result);
-    });
+    for (let i = 0; i < maxImg; i++) {
+        imgs.push(`../studies/temp/${i}.jpeg`);
+    }
+    
+    return imgs;
   };
+
 
   return (
     <React.Fragment>
@@ -63,7 +65,7 @@ export default function NewPatient() {
               <div className="flex px-4 py-4 border-b border-gray-400 dark:border-gray-200">
                 <div className="flex items-center">
                   <div className="ml-4">
-                    <h2 className="text-blue-400">Registrar Paciente</h2>
+                    <h2 className="text-blue-400">Datos del Paciente</h2>
                   </div>
                 </div>
               </div>
@@ -134,19 +136,48 @@ export default function NewPatient() {
                         variant="filled"
                       />
                         )}
-                      />
-                      
+                      />               
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center mt-20">
+            <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
+              <div className="flex px-4 py-4 border-b border-gray-400 dark:border-gray-200">
+                <div className="flex items-center">
+                  <div className="ml-4">
+                    <h2 className="text-blue-400">Imagenes</h2>
+                  </div>
+                </div>
+              </div>
+              <div className="container sub-container-narrow p-8">
+              <form onSubmit={handleSubmit(onSubmit)} id="new_patient">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                  {getImgs().map((src, i) => (
+                    <div 
+                    key={i}
+                    >
+                    <img
+                        id={`photo${i}`}
+                        alt="The screen capture will appear in this box."
+                        src={src}
+                        className="m-auto"
+                      ></img>
                       
                     </div>
+                  ))}
                   </div>
                   <div className="flex items-center justify-center px-8">
                     <div className="flex flex-shrink-0 mt-10 ml-auto">
                       <Button
-                        type="submit"
                         variant="contained"
                         className="text-end"
+                        onClick={() => window.print()}
                       >
-                        Guardar
+                        Imprimir
                       </Button>
                     </div>
                   </div>
@@ -154,6 +185,7 @@ export default function NewPatient() {
               </div>
             </div>
           </div>
+
         </Paper>
       </Container>
     </React.Fragment>

@@ -14,7 +14,6 @@ import MenuItem from "@mui/material/MenuItem";
 import ReactHookFormSelect from "./SelectInput";
 import { useForm, Controller } from "react-hook-form";
 
-import ModalView from "./Modal";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -54,8 +53,6 @@ export default function NewStudy() {
 
     for (let i = 0; i < maxImg; i++) {
         imgs.push(`../studies/temp/${i}.jpeg`);
-        if (selected[i] === undefined)
-            selected.push(false);
     }
     
     return imgs;
@@ -66,7 +63,6 @@ export default function NewStudy() {
       <CssBaseline />
       <Container maxWidth="lg">
         <Paper>
-          <ModalView />
           <div className="flex flex-col justify-center mt-12">
             <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
               <div className="flex px-4 py-4 border-b border-gray-400 dark:border-gray-200">
