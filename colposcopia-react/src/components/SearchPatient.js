@@ -10,14 +10,6 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
-
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import MenuItem from "@mui/material/MenuItem";
-import ReactHookFormSelect from "./SelectInput";
-import { useForm, Controller } from "react-hook-form";
-
 import { useNavigate } from "react-router-dom";
 
 const { ipcRenderer } = window.require("electron");

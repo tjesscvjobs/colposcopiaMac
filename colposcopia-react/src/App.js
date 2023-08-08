@@ -11,10 +11,11 @@ import NewPatientOption from './components/NewPatientOption';
 import NewStudyOption from './components/NewStudyOption';
 import SearchPatient from './components/SearchPatient';
 import BasicStudyPrint from './components/BasicStudyPrint';
-import RenderBasicStudy from './components/RenderBasicStudy';
+import StudyPrint from './components/StudyPrint';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
+import PrinterContextProvider from './contexts/printerContextProvider';
 
 function App() {
   const router = createBrowserRouter([
@@ -64,7 +65,11 @@ function App() {
         },
         {
           path: "basicStudyPrint",
-          element: <RenderBasicStudy />
+          element: <BasicStudyPrint />
+        },
+        {
+          path: "studyPrint",
+          element: <StudyPrint />
         }
       ]
     },
@@ -72,7 +77,9 @@ function App() {
 
   return ( 
     <React.Fragment>
-      <RouterProvider router={router} />
+      <PrinterContextProvider>
+        <RouterProvider router={router} />
+      </PrinterContextProvider>
     </React.Fragment>
   );
 }

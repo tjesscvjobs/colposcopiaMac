@@ -4,8 +4,15 @@ import {
   Button,
   Container,
   CssBaseline,
+  TextField,
 } from "@mui/material";
 
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import MenuItem from "@mui/material/MenuItem";
+import ReactHookFormSelect from "./SelectInput";
+import { useForm, Controller } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
 import { PrinterContext } from "../contexts/printerContext";
@@ -15,11 +22,12 @@ const { ipcRenderer } = window.require("electron");
 const patient = JSON.parse(localStorage.getItem("patient"));
 const study = JSON.parse(localStorage.getItem("study"));
 
-export default function BasicStudyPrintCopy() {
+export default function StudyPrint() {
   const navigate = useNavigate();
   const printerContext = React.useContext(PrinterContext);
 
   const onPrint = () => {
+    console.log(printerContext.showNavBar);
     printerContext.setShowNavBar(false);
   };
 
@@ -35,6 +43,7 @@ export default function BasicStudyPrintCopy() {
   };
 
   React.useEffect(() => {
+    console.log(printerContext.showNavBar);
     if (!printerContext.showNavBar) {
       window.print();
       printerContext.setShowNavBar(true);
@@ -52,7 +61,7 @@ export default function BasicStudyPrintCopy() {
               alt="The screen capture will appear in this box."
               src={`../img/logo-medical.png`}
               className="m-auto"
-              style={{maxHeight: "30px"}}
+              style={{ maxHeight: "30px" }}
             ></img>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-1 text-center">
@@ -67,12 +76,12 @@ export default function BasicStudyPrintCopy() {
               alt="The screen capture will appear in this box."
               src={`../img/logo-medical_1.png`}
               className="m-auto"
-              style={{maxHeight: "60px"}}
+              style={{ maxHeight: "60px" }}
             ></img>
           </div>
         </div>
       </Paper>
-
+     
         <Paper>
           <div className="flex flex-col justify-center mt-12">
             <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
@@ -114,6 +123,106 @@ export default function BasicStudyPrintCopy() {
                   <p className="ml-2">{patient.informacion_adicional}</p>
                 </div>
 
+                <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
+                  <div className="flex items-center">
+                    <div>
+                      <h2 className="text-blue-400">Colposcopia</h2>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                    <div className="flex">
+                      <strong>Vulva y Vagina:</strong>
+                      <p className="ml-2">{study.vulva_vagina}</p>
+                    </div>
+                    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                      <div className="flex">
+                        <strong>Colposcopia:</strong>
+                        <p className="ml-2">{study.colposcopia}</p>
+                      </div>
+                      <div className="flex">
+                        <strong>Cervix:</strong>
+                        <p className="ml-2">{study.cervix}</p>
+                      </div>
+                      <div className="flex">
+                        <strong>Zona de transformacion:</strong>
+                        <p className="ml-2">{study.zonaTransformacion}</p>
+                      </div>
+                      <div className="flex">
+                        <strong>Epitelio Acetoblanco:</strong>
+                        <p className="ml-2">{study.epitelioAcetoblanco}</p>
+                      </div>
+                      <div className="flex">
+                        <strong>Bordes:</strong>
+                        <p className="ml-2">{study.bordes}</p>
+                      </div>
+                      <div className="flex">
+                        <strong>Superficie:</strong>
+                        <p className="ml-2">{study.superficie}</p>
+                      </div>
+                    </div>
+                    <div className="flex">
+                      <strong>Prueba Schiller:</strong>
+                      <p className="ml-2">{study.pruebaSchiller}</p>
+                    </div>
+                    <div className="flex">
+                      <strong>Observaciones:</strong>
+                      <p className="ml-2">{study.observaciones}</p>
+                    </div>
+                    <div className="flex">
+                      <strong>Diagnostico Colposcopico:</strong>
+                      <p className="ml-2">{study.diagnosticoColposcopico}</p>
+                    </div>
+                    <div className="flex">
+                      <strong>Otras:</strong>
+                      <p className="ml-2">{study.otras}</p>
+                    </div>
+                    <div className="flex">
+                      <strong>Plan de Acción:</strong>
+                      <p className="ml-2">{study.planAccion}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Paper>
+    
+      <Paper>
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-52">
+          <div>
+            <img
+              id={`logo1`}
+              alt="The screen capture will appear in this box."
+              src={`../img/logo-medical_1.png`}
+              className="m-auto"
+              style={{ maxHeight: "30px" }}
+            ></img>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-1 text-center">
+            <strong className="text-xs">Clinica</strong>
+            <strong className="text-xs">Dirección</strong>
+            <strong className="text-xs">Responsable</strong>
+            <strong className="text-xs">Cedula</strong>
+          </div>
+          <div>
+            <img
+              id={`logo2`}
+              alt="The screen capture will appear in this box."
+              src={`../img/logo-medical.png`}
+              className="m-auto"
+              style={{ maxHeight: "60px" }}
+            ></img>
+          </div>
+        </div>
+      </Paper>
+
+        <Paper>
+          <div className="flex flex-col justify-center mt-12">
+            <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
+              <div className="container sub-container-narrow p-8">
                 <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
                   <div className="flex items-center">
                     <div>

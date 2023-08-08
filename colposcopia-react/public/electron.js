@@ -159,6 +159,23 @@ function createWindow() {
 
     win.webContents.send("rename_image:result", result);
   });
+
+   /**
+   * Update study
+   * @global function
+   * @param {object} patient - info data patient
+   * */
+   ipcMain.on("update_study:submit", async (event, id, study) => {
+    const result = await prisma.study.update( { 
+      where: {
+        id: id
+      },
+      data: {
+        ...study
+      }
+    })
+    win.webContents.send("update_study:result", result);
+  });
 }
 
 // This method will be called when Electron has finished
