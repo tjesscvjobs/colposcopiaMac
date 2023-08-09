@@ -91,3 +91,11 @@ model Study {
   otras                   String?
   planAccion              String?
 }
+
+model Clinic {
+  id          Int     @id @default(autoincrement())
+  clinica     String?
+  direccion   String?
+  responsable String?
+  cedula      String?
+}

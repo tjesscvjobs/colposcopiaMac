@@ -163,7 +163,8 @@ function createWindow() {
    /**
    * Update study
    * @global function
-   * @param {object} patient - info data patient
+   * @param {object} id - info data patient
+   * @param {object} study - info data study
    * */
    ipcMain.on("update_study:submit", async (event, id, study) => {
     const result = await prisma.study.update( { 
@@ -175,6 +176,66 @@ function createWindow() {
       }
     })
     win.webContents.send("update_study:result", result);
+  });
+
+  /**
+   * Update clinic
+   * @global function
+   * @param {object} clinic - info data clinic
+   * */
+  ipcMain.on("update_clinic:submit", async (event, clinic, file = null) => {
+
+    var result = await prisma.clinic.findUnique(
+      {
+        where: {
+          id: 1,
+      }
+    })
+
+    if (result == null) {
+      result = await prisma.clinic.create({
+        data: clinic,
+      });
+    } else {
+      result = await prisma.clinic.update(
+        {
+          where: {
+            id: 1,
+          },
+          data: {
+            ...clinic,
+          },
+        })
+    } 
+
+    if (file != null) {
+
+      const b = file.split(",");
+      fs.writeFile(
+        __dirname + `/img/logo-medical_1.png`,
+        b[1],
+        "base64",
+        function (err) {
+          if (err) throw err;
+        }
+      );
+    } 
+      
+    win.webContents.send("update_clinic:result", result);
+  });
+
+  /**
+   * get clinic
+   * @global function
+   * */
+  ipcMain.on("get_clinic:submit", async (event) => {
+    const result = await prisma.clinic.findUnique({
+        where: {
+          id: 1,
+          }
+      })
+
+    win.webContents.send("get_clinic:result", result);
   });
 }
 

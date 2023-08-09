@@ -97,12 +97,20 @@ export default function Nav() {
                   onClick={() => {
                     handleClose();
                     navigate("/newpatient");
+                    localStorage.clear();
                   }}
                 >
                   Nuevo
                 </MenuItem>
                 <MenuItem onClick={handleClose}>Consulta Actual</MenuItem>
-                <MenuItem onClick={handleClose}>Seguimiento</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    navigate("/searchPatientHistory");
+                  }}
+                >
+                  Seguimiento
+                </MenuItem>
               </Menu>
             </Link>
             <Link>
@@ -138,7 +146,14 @@ export default function Nav() {
                 >
                   Nuevo
                 </MenuItem>
-                <MenuItem onClick={handleClose1}>Personalizar Reporte</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleClose1();
+                    navigate("/customReport");
+                  }}
+                >
+                  Personalizar Reporte
+                </MenuItem>
               </Menu>
             </Link>
             <Link>

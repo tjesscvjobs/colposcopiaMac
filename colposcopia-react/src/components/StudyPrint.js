@@ -2,17 +2,9 @@ import * as React from "react";
 import {
   Paper,
   Button,
-  Container,
   CssBaseline,
-  TextField,
 } from "@mui/material";
 
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import MenuItem from "@mui/material/MenuItem";
-import ReactHookFormSelect from "./SelectInput";
-import { useForm, Controller } from "react-hook-form";
 
 import { useNavigate } from "react-router-dom";
 import { PrinterContext } from "../contexts/printerContext";
@@ -25,10 +17,18 @@ const study = JSON.parse(localStorage.getItem("study"));
 export default function StudyPrint() {
   const navigate = useNavigate();
   const printerContext = React.useContext(PrinterContext);
+  const [clinic, setClinic] = React.useState({});
 
   const onPrint = () => {
     console.log(printerContext.showNavBar);
     printerContext.setShowNavBar(false);
+  };
+
+  const getClinic = () => {
+    ipcRenderer.send("get_clinic:submit");
+    ipcRenderer.on("get_clinic:result", (event, result) => {
+      setClinic(result);
+    });
   };
 
   const getImgs = () => {
@@ -50,6 +50,10 @@ export default function StudyPrint() {
     }
   }, [printerContext.showNavBar]);
 
+  React.useEffect(() => {
+    getClinic();
+  }, []);
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -65,10 +69,10 @@ export default function StudyPrint() {
             ></img>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-1 text-center">
-            <strong className="text-xs">Clinica</strong>
-            <strong className="text-xs">Dirección</strong>
-            <strong className="text-xs">Responsable</strong>
-            <strong className="text-xs">Cedula</strong>
+            <strong className="text-xs">{clinic.clinica}</strong>
+            <strong className="text-xs">{clinic.direccion}</strong>
+            <strong className="text-xs">{clinic.responsable}</strong>
+            <strong className="text-xs">{clinic.cedula}</strong>
           </div>
           <div>
             <img
@@ -81,115 +85,115 @@ export default function StudyPrint() {
           </div>
         </div>
       </Paper>
-     
-        <Paper>
-          <div className="flex flex-col justify-center mt-12">
-            <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
-              <div className="container sub-container-narrow p-8">
-                <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
-                  <div className="flex items-center">
-                    <div>
-                      <h2 className="text-blue-400">Datos del Paciente</h2>
-                    </div>
+
+      <Paper>
+        <div className="flex flex-col justify-center mt-12">
+          <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
+            <div className="container sub-container-narrow p-8">
+              <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
+                <div className="flex items-center">
+                  <div>
+                    <h2 className="text-blue-400">Datos del Paciente</h2>
                   </div>
                 </div>
+              </div>
 
-                <div className="flex justify-end">
-                  <strong>Fecha del estudio:</strong>
-                  <p className="ml-2">{new Date().toLocaleDateString()}</p>
+              <div className="flex justify-end">
+                <strong>Fecha del estudio:</strong>
+                <p className="ml-2">{new Date().toLocaleDateString()}</p>
+              </div>
+              <div className="flex">
+                <strong>Nombre:</strong>
+                <p className="ml-2">{patient.nombre}</p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 text-center">
+                <div className="flex">
+                  <strong>Sexo:</strong>
+                  <p className="ml-2">{patient.sexo}</p>
                 </div>
                 <div className="flex">
-                  <strong>Nombre:</strong>
-                  <p className="ml-2">{patient.nombre}</p>
+                  <strong>Fecha de Nacimiento:</strong>
+                  <p className="ml-2">{patient.fecha_nacimiento}</p>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 text-center">
-                  <div className="flex">
-                    <strong>Sexo:</strong>
-                    <p className="ml-2">{patient.sexo}</p>
-                  </div>
-                  <div className="flex">
-                    <strong>Fecha de Nacimiento:</strong>
-                    <p className="ml-2">{patient.fecha_nacimiento}</p>
-                  </div>
-                </div>
+              </div>
 
-                <div className="flex">
-                  <strong>Contacto:</strong>
-                  <p className="ml-2">{patient.contacto}</p>
-                </div>
+              <div className="flex">
+                <strong>Contacto:</strong>
+                <p className="ml-2">{patient.contacto}</p>
+              </div>
 
-                <div className="flex">
-                  <strong>Informacion adicional:</strong>
-                  <p className="ml-2">{patient.informacion_adicional}</p>
-                </div>
+              <div className="flex">
+                <strong>Informacion adicional:</strong>
+                <p className="ml-2">{patient.informacion_adicional}</p>
+              </div>
 
-                <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
-                  <div className="flex items-center">
-                    <div>
-                      <h2 className="text-blue-400">Colposcopia</h2>
-                    </div>
+              <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
+                <div className="flex items-center">
+                  <div>
+                    <h2 className="text-blue-400">Colposcopia</h2>
                   </div>
                 </div>
+              </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+                  <div className="flex">
+                    <strong>Vulva y Vagina:</strong>
+                    <p className="ml-2">{study.vulva_vagina}</p>
+                  </div>
+                  <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
                     <div className="flex">
-                      <strong>Vulva y Vagina:</strong>
-                      <p className="ml-2">{study.vulva_vagina}</p>
-                    </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
-                      <div className="flex">
-                        <strong>Colposcopia:</strong>
-                        <p className="ml-2">{study.colposcopia}</p>
-                      </div>
-                      <div className="flex">
-                        <strong>Cervix:</strong>
-                        <p className="ml-2">{study.cervix}</p>
-                      </div>
-                      <div className="flex">
-                        <strong>Zona de transformacion:</strong>
-                        <p className="ml-2">{study.zonaTransformacion}</p>
-                      </div>
-                      <div className="flex">
-                        <strong>Epitelio Acetoblanco:</strong>
-                        <p className="ml-2">{study.epitelioAcetoblanco}</p>
-                      </div>
-                      <div className="flex">
-                        <strong>Bordes:</strong>
-                        <p className="ml-2">{study.bordes}</p>
-                      </div>
-                      <div className="flex">
-                        <strong>Superficie:</strong>
-                        <p className="ml-2">{study.superficie}</p>
-                      </div>
+                      <strong>Colposcopia:</strong>
+                      <p className="ml-2">{study.colposcopia}</p>
                     </div>
                     <div className="flex">
-                      <strong>Prueba Schiller:</strong>
-                      <p className="ml-2">{study.pruebaSchiller}</p>
+                      <strong>Cervix:</strong>
+                      <p className="ml-2">{study.cervix}</p>
                     </div>
                     <div className="flex">
-                      <strong>Observaciones:</strong>
-                      <p className="ml-2">{study.observaciones}</p>
+                      <strong>Zona de transformacion:</strong>
+                      <p className="ml-2">{study.zonaTransformacion}</p>
                     </div>
                     <div className="flex">
-                      <strong>Diagnostico Colposcopico:</strong>
-                      <p className="ml-2">{study.diagnosticoColposcopico}</p>
+                      <strong>Epitelio Acetoblanco:</strong>
+                      <p className="ml-2">{study.epitelioAcetoblanco}</p>
                     </div>
                     <div className="flex">
-                      <strong>Otras:</strong>
-                      <p className="ml-2">{study.otras}</p>
+                      <strong>Bordes:</strong>
+                      <p className="ml-2">{study.bordes}</p>
                     </div>
                     <div className="flex">
-                      <strong>Plan de Acción:</strong>
-                      <p className="ml-2">{study.planAccion}</p>
+                      <strong>Superficie:</strong>
+                      <p className="ml-2">{study.superficie}</p>
                     </div>
+                  </div>
+                  <div className="flex">
+                    <strong>Prueba Schiller:</strong>
+                    <p className="ml-2">{study.pruebaSchiller}</p>
+                  </div>
+                  <div className="flex">
+                    <strong>Observaciones:</strong>
+                    <p className="ml-2">{study.observaciones}</p>
+                  </div>
+                  <div className="flex">
+                    <strong>Diagnostico Colposcopico:</strong>
+                    <p className="ml-2">{study.diagnosticoColposcopico}</p>
+                  </div>
+                  <div className="flex">
+                    <strong>Otras:</strong>
+                    <p className="ml-2">{study.otras}</p>
+                  </div>
+                  <div className="flex">
+                    <strong>Plan de Acción:</strong>
+                    <p className="ml-2">{study.planAccion}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Paper>
-    
+        </div>
+      </Paper>
+
       <Paper>
         <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-52">
           <div>
@@ -202,10 +206,10 @@ export default function StudyPrint() {
             ></img>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-1 text-center">
-            <strong className="text-xs">Clinica</strong>
-            <strong className="text-xs">Dirección</strong>
-            <strong className="text-xs">Responsable</strong>
-            <strong className="text-xs">Cedula</strong>
+            <strong className="text-xs">{clinic.clinica}</strong>
+            <strong className="text-xs">{clinic.direccion}</strong>
+            <strong className="text-xs">{clinic.responsable}</strong>
+            <strong className="text-xs">{clinic.cedula}</strong>
           </div>
           <div>
             <img
@@ -219,54 +223,53 @@ export default function StudyPrint() {
         </div>
       </Paper>
 
-        <Paper>
-          <div className="flex flex-col justify-center mt-12">
-            <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
-              <div className="container sub-container-narrow p-8">
-                <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
-                  <div className="flex items-center">
-                    <div>
-                      <h2 className="text-blue-400">Imagenes</h2>
-                    </div>
+      <Paper>
+        <div className="flex flex-col justify-center mt-12">
+          <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
+            <div className="container sub-container-narrow p-8">
+              <div className="flex py-4 border-b border-gray-400 dark:border-gray-200">
+                <div className="flex items-center">
+                  <div>
+                    <h2 className="text-blue-400">Imagenes</h2>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-2">
-                  {getImgs().map((src, i) => (
-                    <div key={i} className="items-center">
-                      <img
-                        id={`photo${i}`}
-                        alt="The screen capture will appear in this box."
-                        src={src}
-                        className="m-auto"
-                      ></img>
-                    </div>
-                  ))}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-2">
+                {getImgs().map((src, i) => (
+                  <div key={i} className="items-center">
+                    <img
+                      id={`photo${i}`}
+                      alt="The screen capture will appear in this box."
+                      src={src}
+                      className="m-auto"
+                    ></img>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {printerContext.showNavBar && (
+          <div className="flex flex-col justify-center mt-20">
+            <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
+              <div className="container sub-container-narrow p-8">
+                <div className="flex items-center justify-center px-8">
+                  <div className="flex flex-shrink-0 mt-10 ml-auto">
+                    <Button
+                      variant="contained"
+                      className="text-end"
+                      onClick={onPrint}
+                    >
+                      Imprimir
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {printerContext.showNavBar && (
-            <div className="flex flex-col justify-center mt-20">
-              <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
-                <div className="container sub-container-narrow p-8">
-                  <div className="flex items-center justify-center px-8">
-                    <div className="flex flex-shrink-0 mt-10 ml-auto">
-                      <Button
-                        variant="contained"
-                        className="text-end"
-                        onClick={onPrint}
-                      >
-                        Imprimir
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </Paper>
-
+        )}
+      </Paper>
     </React.Fragment>
   );
 }

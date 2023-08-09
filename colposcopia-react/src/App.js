@@ -16,6 +16,9 @@ import StudyPrint from './components/StudyPrint';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
 import PrinterContextProvider from './contexts/printerContextProvider';
+import CustomReport from './components/CustomReport';
+import SearchPatientHistory from './components/SearchPatientHistory';
+import ListHistoryStudy from './components/ListHistoryStudy';
 
 function App() {
   const router = createBrowserRouter([
@@ -70,6 +73,19 @@ function App() {
         {
           path: "studyPrint",
           element: <StudyPrint />
+        },
+        {
+          path: "customReport",
+          element: <CustomReport />
+        },
+        {
+          path: "searchPatientHistory",
+          element: <SearchPatientHistory />
+        },
+        {
+          path: "listHistoryStudy",
+          element: <ListHistoryStudy/>
+        
         }
       ]
     },

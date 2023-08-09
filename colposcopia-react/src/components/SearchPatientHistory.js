@@ -56,7 +56,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchPatient() {
+export default function SearchPatientHistory() {
   const navigate = useNavigate();
 
   const [name, setName] = React.useState("");
@@ -76,7 +76,7 @@ export default function SearchPatient() {
 
   const selecPatient = (patient) => {
     localStorage.setItem('patient', JSON.stringify(patient));
-      navigate("/newPatientOption")
+      navigate("/listHistoryStudy")
   }
 
   return (
