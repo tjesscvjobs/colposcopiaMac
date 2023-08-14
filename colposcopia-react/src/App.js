@@ -1,24 +1,26 @@
-import * as React from 'react'
-import './App.css';
-import  CarouselView  from './components/Carousel';
-import NewPatient from './components/NewPatient';
-import PatientHistory from './components/PatientHistory';
-import NewStudy from './components/NewStudy';
-import { Calendar } from './components/Calendar';
-import WebcamCapture from './components/Camara';
-import SelectImg from './components/SelectImg';
-import NewPatientOption from './components/NewPatientOption';
-import NewStudyOption from './components/NewStudyOption';
-import SearchPatient from './components/SearchPatient';
-import BasicStudyPrint from './components/BasicStudyPrint';
-import StudyPrint from './components/StudyPrint';
+import * as React from "react";
+import "./App.css";
+import CarouselView from "./components/Carousel";
+import NewPatient from "./components/NewPatient";
+import PatientHistory from "./components/PatientHistory";
+import NewStudy from "./components/NewStudy";
+import { Calendar } from "./components/Calendar";
+import WebcamCapture from "./components/Camara";
+import SelectImg from "./components/SelectImg";
+import NewPatientOption from "./components/NewPatientOption";
+import NewStudyOption from "./components/NewStudyOption";
+import SearchPatient from "./components/SearchPatient";
+import BasicStudyPrint from "./components/BasicStudyPrint";
+import StudyPrint from "./components/StudyPrint";
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './Layout';
-import PrinterContextProvider from './contexts/printerContextProvider';
-import CustomReport from './components/CustomReport';
-import SearchPatientHistory from './components/SearchPatientHistory';
-import ListHistoryStudy from './components/ListHistoryStudy';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Layout from "./Layout";
+import PrinterContextProvider from "./contexts/printerContextProvider";
+import CustomReport from "./components/CustomReport";
+import SearchPatientHistory from "./components/SearchPatientHistory";
+import ListHistoryStudy from "./components/ListHistoryStudy";
+import StudyPrintHistory from "./components/StudyPrintHistory";
+
 
 function App() {
   const router = createBrowserRouter([
@@ -56,42 +58,45 @@ function App() {
         },
         {
           path: "newPatientOption",
-          element: <NewPatientOption />
+          element: <NewPatientOption />,
         },
         {
           path: "newStudyOption",
-          element: <NewStudyOption />
+          element: <NewStudyOption />,
         },
         {
           path: "searchPatient",
-          element: <SearchPatient />
+          element: <SearchPatient />,
         },
         {
           path: "basicStudyPrint",
-          element: <BasicStudyPrint />
+          element: <BasicStudyPrint />,
         },
         {
           path: "studyPrint",
-          element: <StudyPrint />
+          element: <StudyPrint />,
         },
         {
           path: "customReport",
-          element: <CustomReport />
+          element: <CustomReport />,
         },
         {
           path: "searchPatientHistory",
-          element: <SearchPatientHistory />
+          element: <SearchPatientHistory />,
         },
         {
           path: "listHistoryStudy",
-          element: <ListHistoryStudy/>
-        
-        }
-      ]
+          element: <ListHistoryStudy />,
+        },
+        {
+          path: "studyPrintHistory",
+          element: <StudyPrintHistory />,
+        },
+      ],
     },
   ]);
 
-  return ( 
+  return (
     <React.Fragment>
       <PrinterContextProvider>
         <RouterProvider router={router} />

@@ -13,11 +13,12 @@ import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const { ipcRenderer } = window.require("electron");
-const study = JSON.parse(localStorage.getItem("study"));
 
 export default function NewStudy() {
   const [updateStudy, setUpdateStudy] = React.useState(false);
   const navigate = useNavigate();
+  const [patient, setPatient] = React.useState({});
+  const [study, setStudy] = React.useState({});
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -37,14 +38,18 @@ export default function NewStudy() {
   });
 
   const onSubmit = (data) => {
-    //console.log(data);
     ipcRenderer.send("update_study:submit", study.id, data);
     //ipcRenderer.removeAllListeners("save_patient:result");
     ipcRenderer.on("update_study:result", (event, result) => {
       localStorage.setItem("study", JSON.stringify(result));
       setUpdateStudy(true);
+      console.log(result);
     });
   };
+
+  React.useEffect(() => {
+    setStudy(JSON.parse(localStorage.getItem("study")))
+  }, []);
 
   return (
     <React.Fragment>

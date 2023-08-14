@@ -75,9 +75,14 @@ export default function SearchPatientHistory() {
   };
 
   const selecPatient = (patient) => {
-    localStorage.setItem('patient', JSON.stringify(patient));
+      localStorage.setItem('patient', JSON.stringify(patient));
       navigate("/listHistoryStudy")
   }
+
+  React.useEffect(() => {
+    console.log("test");
+    localStorage.clear()
+  }, []);
 
   return (
     <React.Fragment>

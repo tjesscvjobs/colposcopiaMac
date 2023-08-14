@@ -90,6 +90,7 @@ model Study {
   diagnosticoColposcopico String?
   otras                   String?
   planAccion              String?
+  imagenes                Int     @default(4)
 }
 
 model Clinic {

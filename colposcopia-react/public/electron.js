@@ -121,6 +121,7 @@ function createWindow() {
    * Save image in study
    * @global function
    * @param {array} blob - file to save
+   * @param {int} desp - number images
    * @param {int} id - patientID
    * */
   ipcMain.on("rename_image:submit", async (event, blobs, desp, id) => {
@@ -128,6 +129,7 @@ function createWindow() {
     let study = {
       fecha: today,
       patientId: id,
+      imagenes: desp,
     };
     const result = await prisma.study.create({
       data: study,
@@ -175,6 +177,7 @@ function createWindow() {
         ...study
       }
     })
+    console.log(result);
     win.webContents.send("update_study:result", result);
   });
 
@@ -236,6 +239,22 @@ function createWindow() {
       })
 
     win.webContents.send("get_clinic:result", result);
+  });
+
+  /**
+   * get studies by patient id
+   * @global function
+   * */
+  ipcMain.on("get_studies:submit", async (event, id) => {
+    const result = await prisma.study.findMany({
+        where: {
+          patientId: id,
+          }
+        })
+
+    console.log(result);
+
+    win.webContents.send("get_studies:result", result);
   });
 }
 
