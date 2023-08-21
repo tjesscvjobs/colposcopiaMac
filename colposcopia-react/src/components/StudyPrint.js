@@ -21,12 +21,10 @@ export default function StudyPrint() {
   const [study, setStudy] = React.useState({});
 
   const onPrint = () => {
-    console.log(printerContext.showNavBar);
     printerContext.setShowNavBar(false);
   };
 
   const getClinic = () => {
-    console.log("study", study);
     ipcRenderer.send("get_clinic:submit");
     ipcRenderer.on("get_clinic:result", (event, result) => {
       setClinic(result);
@@ -45,7 +43,6 @@ export default function StudyPrint() {
   };
 
   React.useEffect(() => {
-    console.log(printerContext.showNavBar);
     if (!printerContext.showNavBar) {
       window.print();
       printerContext.setShowNavBar(true);
@@ -56,7 +53,6 @@ export default function StudyPrint() {
     getClinic();
     setPatient(JSON.parse(localStorage.getItem("patient")));
     setStudy(JSON.parse(localStorage.getItem("study")))
-    console.log("study2", study);
   }, []);
 
   return (

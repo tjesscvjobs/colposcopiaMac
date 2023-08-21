@@ -1,16 +1,37 @@
+import * as React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import esLocale from '@fullcalendar/core/locales/es';
 
-const events = [{ title: "Meeting", start: new Date() }];
+const { ipcRenderer } = window.require("electron");
+
+//const events = [{ title: "Meeting", start: new Date() }];
 const headerToolbar = {
   left: "prev,next today",
   center: "title",
   right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
 };
-const initialLocaleCode = "es";
 const initialDate = new Date();
 
+
+
 export function Calendar() {
+
+  const [events, setEvents] = React.useState({});
+
+  const getEvents = () => {
+    ipcRenderer.send("get_events:submit");
+    ipcRenderer.on("get_events:result", (event, result) => {
+      setEvents(result);
+    });
+  };
+
+  React.useEffect(() => {
+    getEvents();
+  }, []);
+
   return (
     <div className="flex flex-col justify-center mt-12">
       <div className="rounded rounded-lg bg-slate-200 dark:bg-white/10 mb-7">
@@ -21,14 +42,14 @@ export function Calendar() {
             </div>
           </div>
         </div>
-        <div className="container sub-container-narrow p-8">
+        <div className="container sub-container-narrow p-8 m-auto">
           <FullCalendar
-            plugins={[dayGridPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
             events={events}
             eventContent={renderEventContent}
             headerToolbar={headerToolbar}
             initialDate={initialDate}
-            locale={initialLocaleCode}
+            locale={esLocale}
             buttonIcons={false}
             navLinks={true}
             editable={true}

@@ -181,8 +181,8 @@ export default function Nav() {
                   horizontal: "left",
                 }}
               >
-                <MenuItem onClick={handleClose2}>Consultar</MenuItem>
-                <MenuItem onClick={handleClose2}>Registrar Cita</MenuItem>
+                <MenuItem onClick={() => {handleClose2(); navigate("/calendar")}}>Consultar</MenuItem>
+                <MenuItem onClick={() => {handleClose2(); navigate("/newAppointment")}}>Nueva Cita</MenuItem>
               </Menu>
             </Link>
           </nav>

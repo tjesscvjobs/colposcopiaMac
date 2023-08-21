@@ -58,14 +58,14 @@ function createWindow() {
 
     pregnancies.forEach(async (element) => {
       pregnanciesResult.push(
-        await prisma.regnancies.create({
+        await prisma.pregnancies.create({
           data: element,
         })
       );
     });
-    const result = await prisma.PatientHistory.create({
+    const result = await prisma.patientHistory.create({
       data: {
-        patient: patient,
+        patientId: patient,
         ...history,
       },
     });
@@ -177,7 +177,6 @@ function createWindow() {
         ...study
       }
     })
-    console.log(result);
     win.webContents.send("update_study:result", result);
   });
 
@@ -244,6 +243,7 @@ function createWindow() {
   /**
    * get studies by patient id
    * @global function
+   * @param {int} id - patient id
    * */
   ipcMain.on("get_studies:submit", async (event, id) => {
     const result = await prisma.study.findMany({
@@ -252,10 +252,55 @@ function createWindow() {
           }
         })
 
-    console.log(result);
-
     win.webContents.send("get_studies:result", result);
   });
+
+  /**
+   * get clinic history by patient id
+   * @global function
+   * @param {int} id - patient id
+   * */
+  ipcMain.on("get_medical_history:submit", async (event, id) => {
+    console.log("medical");
+    const history = await prisma.patientHistory.findMany({
+      where: {
+        patientId: id,
+      }
+    })
+    const pregnancies = await prisma.pregnancies.findMany({
+      where: {
+        patientId: id,
+      }
+    })
+    win.webContents.send(
+      "get_medical_history:result", 
+      {
+        history: history[0],
+        pregnancies: pregnancies
+      });
+  });
+  /**
+   * get studies by patient id
+   * @global function
+   * */
+  ipcMain.on("get_events:submit", async (event) => {
+    const result = await prisma.schedule.findMany({})
+
+    win.webContents.send("get_events:result", result);
+  });
+  /**
+   * create appointment
+   * @global function
+   * @param {object} appointment - info data appointment
+   * */
+  ipcMain.on("create_appointment:submit", async (event, appointment) => {
+    const result = await prisma.schedule.create({
+      data: appointment,
+    });
+
+    win.webContents.send("create_appointment:result", result);
+  });
+  
 }
 
 // This method will be called when Electron has finished

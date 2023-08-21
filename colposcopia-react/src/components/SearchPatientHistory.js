@@ -80,7 +80,6 @@ export default function SearchPatientHistory() {
   }
 
   React.useEffect(() => {
-    console.log("test");
     localStorage.clear()
   }, []);
 

@@ -8,16 +8,25 @@ import {
 } from "@mui/material";
 
 import MenuItem from "@mui/material/MenuItem";
-
 import ReactHookFormSelect from "./SelectInput";
 import { useForm, Controller } from "react-hook-form";
-
 import Pregnancies from "./Pregnancies";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { useNavigate } from "react-router-dom";
+
+const { ipcRenderer } = window.require("electron");
 
 export default function PatientHistory() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const [display, setDisplay] = React.useState(true);
   const [pregnancies, setPregnancies] = React.useState([]);
+  const [patient, setPatient] = React.useState({});
+  const [open, setOpen] = React.useState(false);
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -46,10 +55,19 @@ export default function PatientHistory() {
       grupoSanguineo: "",
       antecedentesNoPatologicos: "",
       antecedesntesFamOncologicos: "",
+
     },
   });
   const onSubmit = (data) => {
-    console.log(data);
+    data.pregnancies = pregnancies;
+    data.patient = patient.id;
+    
+    ipcRenderer.send("save_history:submit", data);
+    //ipcRenderer.removeAllListeners("save_patient:result");
+    ipcRenderer.on("save_history:result", (event, result) => {
+      setOpen(true);
+
+    });
   };
 
   const handleAddPregnancy = (pregnancy) => {
@@ -60,6 +78,10 @@ export default function PatientHistory() {
     });
     setIsOpen(!isOpen);
   };
+
+  React.useEffect(() => {
+    setPatient(JSON.parse(localStorage.getItem("patient")));
+  }, []);
 
   return (
     <React.Fragment>
@@ -229,8 +251,8 @@ export default function PatientHistory() {
                       </ReactHookFormSelect>
 
                       <ReactHookFormSelect
-                        id="antCancer"
-                        name="antCancer"
+                        id="cancerFamiliar"
+                        name="cancerFamiliar"
                         label="Ant. Cáncer Familiar"
                         control={control}
                         variant="outlined"
@@ -463,11 +485,17 @@ export default function PatientHistory() {
                         name="grupoSanguineo"
                         label="Grupo Sanguineo"
                         control={control}
-                        defaultValue={"No"}
+                        defaultValue={"A+"}
                         variant="outlined"
                       >
-                        <MenuItem value="No">No</MenuItem>
-                        <MenuItem value="Si">Si</MenuItem>
+                        <MenuItem value="A+">A+</MenuItem>
+                        <MenuItem value="A-">A-</MenuItem>
+                        <MenuItem value="B+">B+</MenuItem>
+                        <MenuItem value="B-">B-</MenuItem>
+                        <MenuItem value="AB+">AB+</MenuItem>
+                        <MenuItem value="AB-">AB-</MenuItem>
+                        <MenuItem value="O+">O+</MenuItem>
+                        <MenuItem value="O-">O-</MenuItem>
                       </ReactHookFormSelect>
                     </div>
                     <h1>Antecedentes Personales No Patológicos</h1>
@@ -516,6 +544,26 @@ export default function PatientHistory() {
               </div>
             </div>
           </div>
+          <Dialog
+            open={open}
+            onClose={() => setOpen(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              Historia clinica
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Se registro la historia clinica correctamente
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => {setOpen(false);  navigate("/camara");}} autoFocus>
+                ok
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Paper>
       </Container>
     </React.Fragment>

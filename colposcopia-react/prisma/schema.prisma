@@ -100,3 +100,9 @@ model Clinic {
   responsable String?
   cedula      String?
 }
+
+model Schedule {
+  id    Int      @id @default(autoincrement())
+  title String
+  start DateTime
+}

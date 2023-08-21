@@ -43,7 +43,6 @@ export default function NewStudy() {
     ipcRenderer.on("update_study:result", (event, result) => {
       localStorage.setItem("study", JSON.stringify(result));
       setUpdateStudy(true);
-      console.log(result);
     });
   };
 

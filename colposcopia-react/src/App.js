@@ -20,7 +20,7 @@ import CustomReport from "./components/CustomReport";
 import SearchPatientHistory from "./components/SearchPatientHistory";
 import ListHistoryStudy from "./components/ListHistoryStudy";
 import StudyPrintHistory from "./components/StudyPrintHistory";
-
+import NewAppointment from "./components/NewAppointment";
 
 function App() {
   const router = createBrowserRouter([
@@ -92,6 +92,10 @@ function App() {
           path: "studyPrintHistory",
           element: <StudyPrintHistory />,
         },
+        {
+          path: "newAppointment",
+          element: <NewAppointment />,        
+        }
       ],
     },
   ]);
