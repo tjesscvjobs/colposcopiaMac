@@ -11,3 +11,6 @@ colposcopia-react/src/lib/db.js
 colposcopia-react/src/reportWebVitals.js
 colposcopia-react/src/setupTests.js
 colposcopia-react/public/studies/patient/*.jpeg
+colposcopia-react/dist
+colposcopia-react/build
+
