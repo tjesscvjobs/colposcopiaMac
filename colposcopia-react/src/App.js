@@ -13,7 +13,7 @@ import SearchPatient from "./components/SearchPatient";
 import BasicStudyPrint from "./components/BasicStudyPrint";
 import StudyPrint from "./components/StudyPrint";
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import Layout from "./Layout";
 import PrinterContextProvider from "./contexts/printerContextProvider";
 import CustomReport from "./components/CustomReport";
@@ -23,7 +23,7 @@ import StudyPrintHistory from "./components/StudyPrintHistory";
 import NewAppointment from "./components/NewAppointment";
 
 function App() {
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: "/",
       element: <Layout />,

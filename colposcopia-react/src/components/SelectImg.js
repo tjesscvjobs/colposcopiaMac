@@ -17,7 +17,7 @@ export default function SelectImg() {
     const maxImg = localStorage.getItem("img");
 
     for (let i = 0; i < maxImg; i++) {
-        imgs.push(`../studies/temp/${i}.jpeg`);
+        imgs.push(`studies/temp/${i}.jpeg`);
         if (selected[i] === undefined)
             selected.push(false);
     }

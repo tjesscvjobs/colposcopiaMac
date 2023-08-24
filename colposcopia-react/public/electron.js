@@ -4,6 +4,7 @@ const { app, BrowserWindow } = require("electron");
 const ipcMain = require("electron").ipcMain;
 const isDev = require("electron-is-dev");
 const fs = require("fs");
+const url = require("url");
 
 //import { , PrismaClient } from "@prisma/client";
 const { Prisma, PrismaClient } = require("@prisma/client");
@@ -23,11 +24,28 @@ function createWindow() {
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
-  win.loadURL(
+  /*const startUrl =
+    process.env.ELECTRON_START_URL ||
+    url.format({
+      pathname: path.join(__dirname, "./../build/index.html"),
+      protocol: "file:",
+      slashes: true,
+    });*/
+    const startUrl =
+    url.format({
+      pathname: path.join(__dirname, "./../build/index.html"),
+      protocol: "file:",
+      slashes: true,
+    });
+    win.loadURL(startUrl);
+      
+
+  /*win.loadURL(
     isDev
       ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "../build/index.html")}`
-  );
+      //: `file://${path.join(__dirname, "../build/index.html")}`
+      : `app://../build/index.html`
+  );*/
   // Open the DevTools.
   if (isDev) {
     win.webContents.openDevTools({ mode: "detach" });
@@ -109,11 +127,11 @@ function createWindow() {
    * @param {string} patient - name of patient
    * */
   ipcMain.on("get_list_name:submit", async (event, patient) => {
-    let patients = await prisma.patient.findMany({ 
+    let patients = await prisma.patient.findMany({
       where: {
         nombre: { contains: patient },
       },
-    })
+    });
     win.webContents.send("get_list_name:result", patients);
   });
 
@@ -147,36 +165,39 @@ function createWindow() {
       }
     }
 
-    if (fs.existsSync( __dirname + `/studies/temp`)) {
-      fs.readdirSync(__dirname + `/studies/temp`).forEach(function (file, index) {
-          var currentPath = path.join(__dirname + `/studies/temp`, file);
-          if (fs.lstatSync(currentPath).isDirectory()) {
-            deleteFolderRecursively(currentPath);
-          } else {
-              fs.unlinkSync(currentPath); // delete file
-          }
+    if (fs.existsSync(__dirname + `/studies/temp`)) {
+      fs.readdirSync(__dirname + `/studies/temp`).forEach(function (
+        file,
+        index
+      ) {
+        var currentPath = path.join(__dirname + `/studies/temp`, file);
+        if (fs.lstatSync(currentPath).isDirectory()) {
+          deleteFolderRecursively(currentPath);
+        } else {
+          fs.unlinkSync(currentPath); // delete file
+        }
       });
       fs.rmdirSync(__dirname + `/studies/temp`); // delete folder/directories
-  }
+    }
 
     win.webContents.send("rename_image:result", result);
   });
 
-   /**
+  /**
    * Update study
    * @global function
    * @param {object} id - info data patient
    * @param {object} study - info data study
    * */
-   ipcMain.on("update_study:submit", async (event, id, study) => {
-    const result = await prisma.study.update( { 
+  ipcMain.on("update_study:submit", async (event, id, study) => {
+    const result = await prisma.study.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        ...study
-      }
-    })
+        ...study,
+      },
+    });
     win.webContents.send("update_study:result", result);
   });
 
@@ -186,32 +207,28 @@ function createWindow() {
    * @param {object} clinic - info data clinic
    * */
   ipcMain.on("update_clinic:submit", async (event, clinic, file = null) => {
-
-    var result = await prisma.clinic.findUnique(
-      {
-        where: {
-          id: 1,
-      }
-    })
+    var result = await prisma.clinic.findUnique({
+      where: {
+        id: 1,
+      },
+    });
 
     if (result == null) {
       result = await prisma.clinic.create({
         data: clinic,
       });
     } else {
-      result = await prisma.clinic.update(
-        {
-          where: {
-            id: 1,
-          },
-          data: {
-            ...clinic,
-          },
-        })
-    } 
+      result = await prisma.clinic.update({
+        where: {
+          id: 1,
+        },
+        data: {
+          ...clinic,
+        },
+      });
+    }
 
     if (file != null) {
-
       const b = file.split(",");
       fs.writeFile(
         __dirname + `/img/logo-medical_1.png`,
@@ -221,8 +238,8 @@ function createWindow() {
           if (err) throw err;
         }
       );
-    } 
-      
+    }
+
     win.webContents.send("update_clinic:result", result);
   });
 
@@ -232,10 +249,10 @@ function createWindow() {
    * */
   ipcMain.on("get_clinic:submit", async (event) => {
     const result = await prisma.clinic.findUnique({
-        where: {
-          id: 1,
-          }
-      })
+      where: {
+        id: 1,
+      },
+    });
 
     win.webContents.send("get_clinic:result", result);
   });
@@ -247,10 +264,10 @@ function createWindow() {
    * */
   ipcMain.on("get_studies:submit", async (event, id) => {
     const result = await prisma.study.findMany({
-        where: {
-          patientId: id,
-          }
-        })
+      where: {
+        patientId: id,
+      },
+    });
 
     win.webContents.send("get_studies:result", result);
   });
@@ -265,26 +282,24 @@ function createWindow() {
     const history = await prisma.patientHistory.findMany({
       where: {
         patientId: id,
-      }
-    })
+      },
+    });
     const pregnancies = await prisma.pregnancies.findMany({
       where: {
         patientId: id,
-      }
-    })
-    win.webContents.send(
-      "get_medical_history:result", 
-      {
-        history: history[0],
-        pregnancies: pregnancies
-      });
+      },
+    });
+    win.webContents.send("get_medical_history:result", {
+      history: history[0],
+      pregnancies: pregnancies,
+    });
   });
   /**
    * get studies by patient id
    * @global function
    * */
   ipcMain.on("get_events:submit", async (event) => {
-    const result = await prisma.schedule.findMany({})
+    const result = await prisma.schedule.findMany({});
 
     win.webContents.send("get_events:result", result);
   });
@@ -300,7 +315,6 @@ function createWindow() {
 
     win.webContents.send("create_appointment:result", result);
   });
-  
 }
 
 // This method will be called when Electron has finished

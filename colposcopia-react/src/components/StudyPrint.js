@@ -36,7 +36,7 @@ export default function StudyPrint() {
     const maxImg = localStorage.getItem("img");
 
     for (let i = 0; i < maxImg; i++) {
-      imgs.push(`../studies/patient/${study.id}-${i}.jpeg`);
+      imgs.push(`studies/patient/${study.id}-${i}.jpeg`);
     }
 
     return imgs;
