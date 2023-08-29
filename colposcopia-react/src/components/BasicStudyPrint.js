@@ -3,16 +3,17 @@ import { Paper, Button, CssBaseline } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 import { PrinterContext } from "../contexts/printerContext";
+import { FilePathContext } from "../contexts/filePathContext";
 
 const { ipcRenderer } = window.require("electron");
-
-const patient = JSON.parse(localStorage.getItem("patient"));
-const study = JSON.parse(localStorage.getItem("study"));
 
 export default function BasicStudyPrintCopy() {
   const navigate = useNavigate();
   const printerContext = React.useContext(PrinterContext);
   const [clinic, setClinic] = React.useState({});
+  const filePathContext = React.useContext(FilePathContext);
+  const [study, setStudy] = React.useState({});
+  const [patient, setPatient] = React.useState({});
 
   const onPrint = () => {
     printerContext.setShowNavBar(false);
@@ -22,7 +23,10 @@ export default function BasicStudyPrintCopy() {
     ipcRenderer.send("get_clinic:submit");
     //ipcRenderer.removeAllListeners("save_patient:result");
     ipcRenderer.on("get_clinic:result", (event, result) => {
-      setClinic(result);
+      console.log("result", result);
+      if (!result) {
+        setClinic({clinica: "clinica", direccion: "direccion", responsable: "responsable", cedula: "cedula"});
+      } else setClinic(result);
     });
   };
 
@@ -31,7 +35,7 @@ export default function BasicStudyPrintCopy() {
     const maxImg = localStorage.getItem("img");
 
     for (let i = 0; i < maxImg; i++) {
-      imgs.push(`studies/patient/${study.id}-${i}.jpeg`);
+      imgs.push(`${filePathContext.filePath}/patient/${study.id}-${i}.jpeg`);
     }
 
     return imgs;
@@ -41,11 +45,14 @@ export default function BasicStudyPrintCopy() {
     if (!printerContext.showNavBar) {
       window.print();
       printerContext.setShowNavBar(true);
+      localStorage.clear();
     }
   }, [printerContext.showNavBar]);
 
   React.useEffect(() => {
     getClinic();
+    setStudy(JSON.parse(localStorage.getItem("study")))
+    setPatient(JSON.parse(localStorage.getItem("patient")));
   }, []);
 
   return (
@@ -57,7 +64,7 @@ export default function BasicStudyPrintCopy() {
             <img
               id={`logo1`}
               alt="The screen capture will appear in this box."
-              src={`../img/logo-medical.png`}
+              src={`./img/logo-medical.png`}
               className="m-auto"
               style={{ maxHeight: "30px" }}
             ></img>
@@ -72,7 +79,7 @@ export default function BasicStudyPrintCopy() {
             <img
               id={`logo2`}
               alt="The screen capture will appear in this box."
-              src={`../img/logo-medical_1.png`}
+              src={`./img/logo-medical_1.png`}
               className="m-auto"
               style={{ maxHeight: "60px" }}
             ></img>

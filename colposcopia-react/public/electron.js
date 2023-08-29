@@ -1,15 +1,45 @@
 const path = require("path");
-
 const { app, BrowserWindow } = require("electron");
 const ipcMain = require("electron").ipcMain;
 const isDev = require("electron-is-dev");
 const fs = require("fs");
 const url = require("url");
+const { join } = require('path');
 
 //import { , PrismaClient } from "@prisma/client";
 const { Prisma, PrismaClient } = require("@prisma/client");
 
-const prisma = new PrismaClient();
+const dbPath = isDev ? path.join(__dirname, '../prisma/dev.db') : path.join(app.getPath("userData"), "database.db")
+const filePath = isDev ? path.join(__dirname, '/studies') : path.join(app.getPath("userData"), "/studies")
+
+if (!fs.existsSync(filePath)) {
+  fs.mkdirSync(filePath, { recursive: true });
+}
+
+if (!isDev) {
+  try {
+      // database file does not exist, need to create
+      fs.copyFileSync(join(process.resourcesPath, 'prisma/dev.db'), dbPath, fs.constants.COPYFILE_EXCL)
+      console.log("New database file created")
+  } catch (err) {
+      if (err.code != "EEXIST") {
+          console.error(`Failed creating sqlite file.`, err)
+      } else {
+        
+          console.log("Database file detected")
+      }
+  }
+}
+
+const prisma = new PrismaClient({
+  datasources: {
+      db: {
+          url: `file:${dbPath}`,
+      },
+  },
+});
+
+//const prisma = new PrismaClient();
 
 function createWindow() {
   // Create the browser window.
@@ -56,6 +86,15 @@ function createWindow() {
   /**
    * Save new patient
    * @global function
+   * */
+  ipcMain.on("get_filepath:submit", async (event) => {
+    console.log("filePath", filePath);
+    win.webContents.send("get_filepath:result", filePath);
+  });
+
+  /**
+   * Save new patient
+   * @global function
    * @param {object} patient - info data patient
    * */
   ipcMain.on("save_patient:submit", async (event, patient) => {
@@ -97,19 +136,22 @@ function createWindow() {
    * @param {number} desp - number images
    * */
   ipcMain.on("image:submit", (event, blob, desp) => {
-    if (!fs.existsSync(__dirname + "/studies/temp")) {
-      fs.mkdirSync(__dirname + "/studies/temp", { recursive: true });
-    }
     /*if (!fs.existsSync(__dirname + "/studies/temp")) {
-      fs.mkdir(__dirname + "/studies/temp", (err, p) => {
-        if (err) throw err;
-      });
+      fs.mkdirSync(__dirname + "/studies/temp", { recursive: true });
     }*/
+    let pathTemp =  path.join(filePath,  "/temp")
+    console.log(pathTemp);
+    if (!fs.existsSync(pathTemp)) {
+      fs.mkdir(pathTemp, {recursive: true}, (err, p) => {
+        if (err) throw err;
+        console.log("p", p);
+      });
+    }
 
     for (let i = 0; i < desp; i++) {
       const b = blob[i].split(",");
       fs.writeFile(
-        __dirname + `/studies/temp/${i}.jpeg`,
+        pathTemp + `/${i}.jpeg`,
         b[1],
         "base64",
         function (err) {
@@ -152,32 +194,33 @@ function createWindow() {
     const result = await prisma.study.create({
       data: study,
     });
-    if (!fs.existsSync(__dirname + "/studies/patient")) {
-      fs.mkdirSync(__dirname + "/studies/patient", { recursive: true });
+    let pathStudy =  path.join(filePath,  "/patient")
+    if (!fs.existsSync(pathStudy)) {
+      fs.mkdirSync(pathStudy, { recursive: true });
     }
     for (let i = 0; i < desp; i++) {
       if (
         fs.renameSync(
-          __dirname + `/studies/temp/${blobs[i]}.jpeg`,
-          __dirname + `/studies/patient/${result.id}-${blobs[i]}.jpeg`
+          `${filePath}/temp/${blobs[i]}.jpeg`,
+          `${filePath}/patient/${result.id}-${blobs[i]}.jpeg`
         )
       ) {
       }
     }
 
-    if (fs.existsSync(__dirname + `/studies/temp`)) {
-      fs.readdirSync(__dirname + `/studies/temp`).forEach(function (
+    if (fs.existsSync( `${filePath}/temp`)) {
+      fs.readdirSync(`${filePath}/temp`).forEach(function (
         file,
         index
       ) {
-        var currentPath = path.join(__dirname + `/studies/temp`, file);
+        var currentPath = path.join( `${filePath}/temp`, file);
         if (fs.lstatSync(currentPath).isDirectory()) {
           deleteFolderRecursively(currentPath);
         } else {
           fs.unlinkSync(currentPath); // delete file
         }
       });
-      fs.rmdirSync(__dirname + `/studies/temp`); // delete folder/directories
+      fs.rmdirSync(`${filePath}/temp`); // delete folder/directories
     }
 
     win.webContents.send("rename_image:result", result);

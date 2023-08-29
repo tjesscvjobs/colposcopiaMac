@@ -102,7 +102,6 @@ export default function Nav() {
                 >
                   Nuevo
                 </MenuItem>
-                <MenuItem onClick={handleClose}>Consulta Actual</MenuItem>
                 <MenuItem
                   onClick={() => {
                     handleClose();

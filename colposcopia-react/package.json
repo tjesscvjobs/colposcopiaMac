@@ -50,7 +50,7 @@
     "version": "echo 'starting postversion script'",
     "postversion": "LAST_VERSION=$(npm pkg get version | sed 's/\"//g')$REACT_APP_ENV_UPDATE_CHANNEL_SUFFIX && echo $LAST_VERSION && sed -i.bak \"s/\\\"version\\\": \\\"[0-9]\\.[0-9]\\.[0-9]\\\"/\\\"version\\\": \\\"$LAST_VERSION\\\"/g\" package.json",
     "start": "SET BROWSER=none&&react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && xcopy prisma build\\prisma /i /e",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start-electron": "set ELECTRON_START_URL=http://localhost:3000 && electron .",
@@ -87,9 +87,9 @@
   },
   "build": {
     "generateUpdatesFilesForAllChannels": true,
-    "appId": "cinarrtolga.electronapp",
-    "productName": "React Electron App",
-    "copyright": "Cinarrtolga",
+    "appId": "colposcopia.electronapp",
+    "productName": "colposcopia",
+    "copyright": "praxis",
     "mac": {
       "publish": {
         "provider": "github",

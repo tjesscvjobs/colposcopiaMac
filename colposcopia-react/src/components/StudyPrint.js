@@ -8,6 +8,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { PrinterContext } from "../contexts/printerContext";
+import { FilePathContext } from "../contexts/filePathContext";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -19,6 +20,7 @@ export default function StudyPrint() {
   const [clinic, setClinic] = React.useState({});
   const [patient, setPatient] = React.useState({});
   const [study, setStudy] = React.useState({});
+  const filePathContext = React.useContext(FilePathContext);
 
   const onPrint = () => {
     printerContext.setShowNavBar(false);
@@ -36,7 +38,7 @@ export default function StudyPrint() {
     const maxImg = localStorage.getItem("img");
 
     for (let i = 0; i < maxImg; i++) {
-      imgs.push(`studies/patient/${study.id}-${i}.jpeg`);
+      imgs.push(`${filePathContext.filePath}/patient/${study.id}-${i}.jpeg`);
     }
 
     return imgs;
@@ -46,6 +48,7 @@ export default function StudyPrint() {
     if (!printerContext.showNavBar) {
       window.print();
       printerContext.setShowNavBar(true);
+      localStorage.clear();
     }
   }, [printerContext.showNavBar]);
 

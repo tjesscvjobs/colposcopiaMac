@@ -7,17 +7,17 @@ export default function CarouselView(props)
 {
     var items = [
         {
-            url: "img/slide/slide-1.jpeg",
+            url: "./img/slide/slide-1.jpeg",
             description: "Colposcopia",
             button: 'Iniciar Estudio'
         },
         {
-            url: "img/slide/slide-2.jpeg",
+            url: "./img/slide/slide-2.jpeg",
             description: "Pacientes",
             button: 'Registrar Paciente'
         },
         {
-            url: "img/slide/slide-3.jpeg",
+            url: "./img/slide/slide-3.jpeg",
             description: "Agenda",
             button: 'Consultar'
         }

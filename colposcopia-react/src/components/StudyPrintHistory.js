@@ -3,6 +3,7 @@ import { Paper, Button, CssBaseline } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 import { PrinterContext } from "../contexts/printerContext";
+import { FilePathContext } from "../contexts/filePathContext";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -13,9 +14,9 @@ export default function StudyPrintHistory() {
   const navigate = useNavigate();
   const printerContext = React.useContext(PrinterContext);
   const [clinic, setClinic] = React.useState({});
+  const filePathContext = React.useContext(FilePathContext);
 
   const onPrint = () => {
-    console.log(printerContext.showNavBar);
     printerContext.setShowNavBar(false);
   };
 
@@ -31,7 +32,7 @@ export default function StudyPrintHistory() {
     const maxImg = study.imagenes;
 
     for (let i = 0; i < maxImg; i++) {
-      imgs.push(`../studies/patient/${study.id}-${i}.jpeg`);
+      imgs.push(`${filePathContext.filePath}/patient/${study.id}-${i}.jpeg`);
     }
 
     return imgs;
@@ -42,6 +43,7 @@ export default function StudyPrintHistory() {
     if (!printerContext.showNavBar) {
       window.print();
       printerContext.setShowNavBar(true);
+      localStorage.clear();
     }
   }, [printerContext.showNavBar]);
 

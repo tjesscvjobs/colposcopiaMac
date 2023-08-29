@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Paper, Button, Container, CssBaseline } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { FilePathContext } from "../contexts/filePathContext";
 
 const { ipcRenderer } = window.require("electron");
 var imgs = []
@@ -10,6 +11,7 @@ var selected = []
 export default function SelectImg() {
 
   const navigate = useNavigate();
+  const filePathContext = React.useContext(FilePathContext);
   const [isSelect, setIsSelect] = React.useState(Array(localStorage.getItem("img")).fill(false));
 
   const getImgs = () => {
@@ -17,7 +19,7 @@ export default function SelectImg() {
     const maxImg = localStorage.getItem("img");
 
     for (let i = 0; i < maxImg; i++) {
-        imgs.push(`studies/temp/${i}.jpeg`);
+        imgs.push(`${filePathContext.filePath}/temp/${i}.jpeg`);
         if (selected[i] === undefined)
             selected.push(false);
     }

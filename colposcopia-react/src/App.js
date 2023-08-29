@@ -22,6 +22,8 @@ import ListHistoryStudy from "./components/ListHistoryStudy";
 import StudyPrintHistory from "./components/StudyPrintHistory";
 import NewAppointment from "./components/NewAppointment";
 
+import FilePathContextProvider from "./contexts/filePathContextProvider"
+
 function App() {
   const router = createHashRouter([
     {
@@ -103,7 +105,9 @@ function App() {
   return (
     <React.Fragment>
       <PrinterContextProvider>
-        <RouterProvider router={router} />
+        <FilePathContextProvider>
+          <RouterProvider router={router} />
+        </FilePathContextProvider>       
       </PrinterContextProvider>
     </React.Fragment>
   );
