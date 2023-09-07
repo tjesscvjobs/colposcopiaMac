@@ -14,3 +14,4 @@ colposcopia-react/public/studies/patient/*.jpeg
 colposcopia-react/dist
 colposcopia-react/build
 
+colposcopia-react/mac/*
