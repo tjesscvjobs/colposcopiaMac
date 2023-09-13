@@ -65,7 +65,14 @@ export default function Nav() {
       >
         <Toolbar sx={{ flexWrap: "wrap" }}>
           <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-            Colposcopia
+          <img
+              id={`logo1`}
+              alt="The screen capture will appear in this box."
+              src={`./img/logo-medical.png`}
+              style={{ maxHeight: "50px" }}
+              className="cursor-pointer"
+              onClick={() => navigate("/")}
+            ></img>
           </Typography>
           <nav>
             <Link>

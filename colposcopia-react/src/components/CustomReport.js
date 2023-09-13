@@ -11,6 +11,11 @@ import { useForm, Controller } from "react-hook-form";
 import { MuiFileInput } from "mui-file-input";
 
 import { useNavigate } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -18,6 +23,7 @@ export default function CustomReport() {
   const navigate = useNavigate();
 
   const [file, setFile] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -34,16 +40,16 @@ export default function CustomReport() {
       reader.onload = function () {
         let value = reader.result;
         ipcRenderer.send("update_clinic:submit", data, value);
-        //ipcRenderer.removeAllListeners("save_patient:result");
+        ipcRenderer.removeAllListeners("update_clinic:result");
         ipcRenderer.on("update_clinic:result", (event, result) => {
-          localStorage.setItem("clinic", JSON.stringify(result));
+          setOpen(true);
         });
       };
     } else {
       ipcRenderer.send("update_clinic:submit", data);
-      //ipcRenderer.removeAllListeners("save_patient:result");
+      ipcRenderer.removeAllListeners("update_clinic:result");
       ipcRenderer.on("update_clinic:result", (event, result) => {
-        localStorage.setItem("clinic", JSON.stringify(result));
+        setOpen(true);
       });
     }
   };
@@ -135,6 +141,26 @@ export default function CustomReport() {
               </div>
             </div>
           </div>
+          <Dialog
+            open={open}
+            onClose={() => setOpen(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              Reporte
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Se personalizo el reporte correctamente
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpen(false)} autoFocus>
+                ok
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Paper>
       </Container>
     </React.Fragment>

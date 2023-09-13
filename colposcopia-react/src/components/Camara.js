@@ -26,6 +26,7 @@ export default function WebcamCapture() {
   const webcamRef = React.useRef(null);
   const imgRef = React.useRef(null);
   const [imgSrc, setImgSrc] = React.useState("");
+  const [open, setOpen] = React.useState(true);
   
 
   const capture = React.useCallback(() => {
@@ -45,6 +46,14 @@ export default function WebcamCapture() {
       navigate("/selectImg");
     });
   }
+
+  React.useEffect(() => {
+    localStorage.removeItem('img');
+    blops = [];
+   setTimeout(() => {
+    setOpen(false);
+   }, 3000);
+  }, []);
 
   return (
     <React.Fragment>
@@ -67,6 +76,7 @@ export default function WebcamCapture() {
               <Button
                 variant="outlined"
                 onClick={capture}
+                disabled={open}
               >
                 Tomar imagen
               </Button>

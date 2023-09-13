@@ -29,7 +29,9 @@ export default function StudyPrint() {
   const getClinic = () => {
     ipcRenderer.send("get_clinic:submit");
     ipcRenderer.on("get_clinic:result", (event, result) => {
-      setClinic(result);
+      if (!result) {
+        setClinic({clinica: "clinica", direccion: "direccion", responsable: "responsable", cedula: "cedula"});
+      } else setClinic(result);
     });
   };
 
